@@ -1,3 +1,3 @@
-public class Hand implements CardPile{
+public class Hand extends CardPile{
 
 }
