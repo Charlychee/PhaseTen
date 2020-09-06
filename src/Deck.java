@@ -1,3 +1,3 @@
-public class Deck implements CardPile{
+public class Deck extends CardPile{
 
 }

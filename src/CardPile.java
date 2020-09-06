@@ -1,2 +1,2 @@
-public interface CardPile {
+public abstract class CardPile {
 }

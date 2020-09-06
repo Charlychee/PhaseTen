@@ -1,2 +1,2 @@
-public class CPUPlayer implements Player{
+public class CPUPlayer extends Player{
 }

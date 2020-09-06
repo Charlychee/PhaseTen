@@ -1,2 +1,2 @@
-public interface Player {
+public abstract class Player {
 }
