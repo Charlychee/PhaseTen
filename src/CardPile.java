@@ -5,7 +5,10 @@ public class CardPile {
     private LinkedList<Card> cards;
     private int size;
 
-    public CardPile() {}
+    public CardPile() {
+        cards = new LinkedList<>();
+    }
+
     public CardPile(LinkedList<Card> _cards) {
         cards = _cards;
         size = _cards.size();
@@ -32,6 +35,10 @@ public class CardPile {
     public void remove(Card card) {
         cards.remove(card);
         --size;
+    }
+
+    public String toString() {
+        return cards.toString();
     }
 
 
