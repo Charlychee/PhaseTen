@@ -14,6 +14,7 @@ public class TestGUI {
 
     /** Creates a test GUI for this GAME. */
     TestGUI() {
+        game = new Game(1, 0);
         board = new JFrame();
         board.add(new JTextField());
         board.setVisible(true);
