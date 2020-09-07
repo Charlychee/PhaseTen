@@ -2,7 +2,7 @@ import java.util.LinkedList;
 
 public class CardPile {
 
-    protected final LinkedList<Card> cards;
+    protected LinkedList<Card> cards;
     protected int size;
 
     public CardPile() {
