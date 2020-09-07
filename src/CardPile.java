@@ -2,8 +2,8 @@ import java.util.LinkedList;
 
 public class CardPile {
 
-    private final LinkedList<Card> cards;
-    private int size;
+    protected final LinkedList<Card> cards;
+    protected int size;
 
     public CardPile() {
         cards = new LinkedList<>();
