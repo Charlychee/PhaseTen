@@ -27,9 +27,9 @@ public class CardPile {
         ++size;
     }
 
-    public void remove() {
-        cards.pop();
+    public Card remove() {
         --size;
+        return cards.pop();
     }
 
     public void remove(Card card) {
@@ -37,8 +37,13 @@ public class CardPile {
         --size;
     }
 
+    /** Prints out the cards in this card pile. */
     public String toString() {
-        return cards.toString();
+        String info = "";
+        for (Card c : cards) {
+            info += c.toString() + "\n";
+        }
+        return info;
     }
 
 
