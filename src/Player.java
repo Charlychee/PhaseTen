@@ -10,6 +10,11 @@ public abstract class Player {
         hand.add(drawnCard);
     }
 
+    /** Gets the player's hand. */
+    public Hand getHand() {
+        return hand;
+    }
+
     /** Prints out a string of information for this player. */
     public String toString() {
         return hand.toString();

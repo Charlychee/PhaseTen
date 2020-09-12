@@ -15,9 +15,9 @@ public class DrawDeck extends CardPile{
                 cards.add(new Card(color, k));
                 cards.add(new Card(color, k));
             }
-            cards.add(new Card(Card.typeEnum.SKIP, 0));
-            cards.add(new Card(Card.typeEnum.WILD, 0));
-            cards.add(new Card(Card.typeEnum.WILD, 0));
+            cards.add(new Card(Card.typeEnum.SKIP));
+            cards.add(new Card(Card.typeEnum.WILD));
+            cards.add(new Card(Card.typeEnum.WILD));
         }
     }
 

@@ -13,7 +13,7 @@ public class Game {
     private int currPlayer;
 
     /** Creates a new game with NUMHUMAN human players, NUMCPU CPU players. */
-    public Game(int numHuman, int numCPU) {
+    public Game(int numHuman, int numCPU) throws Exception {
         players = new Player[numHuman + numCPU];
         for (int i = 0; i < numHuman; i += 1) {
             players[i] = new HumanPlayer();
@@ -32,6 +32,11 @@ public class Game {
         deck.deal(10, players);
     }
 
+    /** Returns the players. */
+    public Player[] getPlayers() {
+        return players;
+    }
+
     /** Returns a string of information for this game. */
     public String toString() {
         String info = "Deck: \n" + deck.toString() + "Discard: \n" + discard.toString() + "Players: \n";
@@ -39,11 +44,5 @@ public class Game {
             info += p.toString();
         }
         return info;
-    }
-
-    public static void main(String[] args) {
-        Game game = new Game(1, 0);
-        System.out.println(game.deck.toString());
-        game.startGame();
     }
 }
