@@ -1,15 +1,19 @@
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-
+/** Represents a card play. */
 public class PlayerCardPile extends CardPile {
+    // TODO: needs to consider the necessary size of the play in the checks.
+    /** Represents the type of card play. */
     enum typeEnum {
         NUM_SET,
         COLOR_SET,
         RUN,
         EVEN_ODD
     }
-    static final HashMap<Card.typeEnum, Integer> colors = new HashMap<>() {
+
+    /** Maps colors to integers. */
+    static final HashMap<Card.typeEnum, Integer> COLORS = new HashMap<>() {
         {
             put(Card.typeEnum.BLUE, 0);
             put(Card.typeEnum.GREEN, 1);
@@ -17,12 +21,17 @@ public class PlayerCardPile extends CardPile {
             put(Card.typeEnum.YELLOW, 3);
         }
     };
+
+    /** The type of card play. */
     final typeEnum type;
+
+    /** The card type data. */
     int typeData = 0;
 
-    public PlayerCardPile(typeEnum _type, LinkedList<Card> _cards) throws Exception {
+    /** Creates a PlayerCardPile of type _TYPE with the specified _CARDS. */
+    public PlayerCardPile(typeEnum _type, LinkedList<Card> _cards) {
         if(_cards.isEmpty()) {
-            throw new Exception();
+            throw new PTException("The given card list is empty.");
         }
         cards = _cards;
         size = _cards.size();
@@ -30,30 +39,31 @@ public class PlayerCardPile extends CardPile {
         switch(_type) {
             case RUN:
                 if(!isRun()) {
-                    throw new Exception();
+                    throw new PTException("Given cards are not a run.");
                 }
                 break;
             case NUM_SET:
                 typeData = _cards.get(0).getValue();
                 if(!isNumSet()) {
-                    throw new Exception();
+                    throw new PTException("Given cards are not a number set.");
                 }
                 break;
             case EVEN_ODD:
                 typeData = _cards.get(0).getValue() % 2;
                 if(!isEvenOdd()) {
-                    throw new Exception();
+                    throw new PTException("Given cards are not an even/odd.");
                 }
                 break;
             case COLOR_SET:
-                typeData = colors.get(_cards.get(0).getType());
+                typeData = COLORS.get(_cards.get(0).getType());
                 if(!isColorSet()) {
-                    throw new Exception();
+                    throw new PTException("Given cards are not a color set.");
                 }
                 break;
         }
     }
 
+    /** Checks if the PlayerCardPile is a run. */
     private boolean isRun(){
         Collections.sort(cards);
         int expected = cards.get(0).getValue();
@@ -65,6 +75,8 @@ public class PlayerCardPile extends CardPile {
         }
         return true;
     }
+
+    /** Checks if the PlayerCardPile is a number set. */
     private boolean isNumSet() {
         for(Card card : cards) {
             if(card.getValue() != typeData) {
@@ -73,9 +85,13 @@ public class PlayerCardPile extends CardPile {
         }
         return true;
     }
+
+    /** Checks if the PlayerCardPile is a color set. */
     private boolean isColorSet() {
         return false;
     }
+
+    /** Checks if the PlayerCardPile is a even/odd set. */
     private boolean isEvenOdd() {
         for(Card card : cards) {
             if(card.getValue() % 2 != typeData) {

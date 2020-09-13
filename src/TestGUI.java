@@ -31,7 +31,7 @@ public class TestGUI {
     private Game game;
 
     /** Creates a test GUI for this GAME. */
-    TestGUI() throws Exception {
+    TestGUI() {
         game = new Game(1, 0);
         player = game.getPlayers()[0];
         handButtons = new ArrayList<>();

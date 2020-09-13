@@ -13,7 +13,7 @@ public class Game {
     private int currPlayer;
 
     /** Creates a new game with NUMHUMAN human players, NUMCPU CPU players. */
-    public Game(int numHuman, int numCPU) throws Exception {
+    public Game(int numHuman, int numCPU) {
         players = new Player[numHuman + numCPU];
         for (int i = 0; i < numHuman; i += 1) {
             players[i] = new HumanPlayer();

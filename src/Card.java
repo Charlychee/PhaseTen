@@ -1,10 +1,5 @@
+/** Represents a PhaseTen Card. */
 public class Card implements Comparable<Card>{
-
-    /** Compares the values of the cards*/
-    @Override
-    public int compareTo(Card o) {
-        return Integer.compare(value, o.value);
-    }
 
     /** Represents the type of card*/
     enum typeEnum {
@@ -23,35 +18,40 @@ public class Card implements Comparable<Card>{
     private final int value;
 
     /** The minimum value of a color card*/
-    private final static int minValue = 1;
+    private final static int MIN_VALUE = 1;
     /** The maximum value of a color card*/
-    private final static int maxValue = 12;
+    private final static int MAX_VALUE = 12;
 
     /**
      * Sets up card color and value. For color cards.
      * @param _type The color of the card
      * @param _value The value of the card
      */
-    public Card(typeEnum _type, int _value) throws Exception {
+    public Card(typeEnum _type, int _value) {
         if (_type != typeEnum.WILD && _type != typeEnum.SKIP
-                && _value <= maxValue && _value >= minValue) {
+                && _value <= MAX_VALUE && _value >= MIN_VALUE) {
             type = _type;
             value = _value;
         }
-        else throw new Exception("Invalid Card");
+        else throw new PTException("Invalid Card");
     }
 
     /**
      * Sets up card type and value. For WILD or SKIP cards only.
      * @param _type The type of the card
-     * @throws Exception Card must be WILD or SKIP
      */
-    public Card(typeEnum _type) throws Exception {
+    public Card(typeEnum _type) {
         if (_type == typeEnum.WILD || _type == typeEnum.SKIP) {
             type = _type;
             value = -1;
         }
-        else throw new Exception("Invalid Card");
+        else throw new PTException("Invalid Card");
+    }
+
+    /** Compares the values of the cards*/
+    @Override
+    public int compareTo(Card o) {
+        return Integer.compare(value, o.value);
     }
 
     /**

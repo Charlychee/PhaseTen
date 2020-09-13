@@ -2,7 +2,7 @@ import java.util.Collections;
 
 public class DrawDeck extends CardPile{
     /** Creates the standard starting deck. */
-    public DrawDeck() throws Exception {
+    public DrawDeck() {
         Card.typeEnum[] colors = new Card.typeEnum[]
                 {
                         Card.typeEnum.BLUE,
