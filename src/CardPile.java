@@ -34,7 +34,7 @@ public class CardPile {
         return cards.pop();
     }
 
-    /** Removes specified CARD from the CardPile and updates size. */
+    /** Removes specified Card from the CardPile and updates size. */
     public void remove(Card card) {
         cards.remove(card);
         --size;

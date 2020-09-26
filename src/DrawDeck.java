@@ -34,4 +34,20 @@ public class DrawDeck extends CardPile{
             }
         }
     }
+
+    /**
+     * Cannot add cards to a DrawDeck
+     */
+    @Override
+    public void add(Card card) {
+        throw new PTException("You cannot add to a deck");
+    }
+
+    /**
+     * Cannot draw a specific card from deck
+     */
+    @Override
+    public void remove(Card card) {
+        throw new PTException("Cannot remove/draw a specific card");
+    }
 }

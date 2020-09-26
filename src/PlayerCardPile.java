@@ -4,6 +4,7 @@ import java.util.LinkedList;
 /** Represents a card play. */
 public class PlayerCardPile extends CardPile {
     // TODO: needs to consider the necessary size of the play in the checks.
+    // TODO: Integrate constructor with Phases
     /** Represents the type of card play. */
     enum typeEnum {
         NUM_SET,
