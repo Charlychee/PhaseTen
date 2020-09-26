@@ -17,6 +17,7 @@ public class TestGUI {
     private JButton card9;
     private JButton card10;
     private JButton button1;
+    private JButton card11;
 
     /** ArrayList of buttons for cards in the hand. */
     private List<JButton> handButtons;
@@ -45,6 +46,7 @@ public class TestGUI {
         handButtons.add(card8);
         handButtons.add(card9);
         handButtons.add(card10);
+        handButtons.add(card11);
         game.startGame();
         setUpPlayerHand();
     }
