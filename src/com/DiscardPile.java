@@ -1,3 +1,5 @@
+package com;
+
 public class DiscardPile extends CardPile{
 
     @Override
@@ -11,7 +13,7 @@ public class DiscardPile extends CardPile{
             return super.remove();
         }
         else {
-            throw new PTException("Cannot remove/draw 'SKIP' cards from DiscardPile.");
+            throw new PTException("Cannot remove/draw 'SKIP' cards from com.DiscardPile.");
         }
     }
 

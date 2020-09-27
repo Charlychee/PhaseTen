@@ -1,7 +1,9 @@
+package com;
+
 import java.util.LinkedList;
 
-/** Represents a collection of cards. Class that's extended by DrawDeck,
- *  DiscardPile, Hand, and PlayerCardPile.
+/** Represents a collection of cards. Class that's extended by com.DrawDeck,
+ *  com.DiscardPile, com.Hand, and com.PlayerCardPile.
  */
 public class CardPile {
 
@@ -11,41 +13,41 @@ public class CardPile {
     /** The size of the card pile. */
     protected int size;
 
-    /** Creates an empty CardPile. */
+    /** Creates an empty com.CardPile. */
     public CardPile() {
         cards = new LinkedList<>();
     }
 
-    /** Creates a CardPile with _CARDS. */
+    /** Creates a com.CardPile with _CARDS. */
     public CardPile(LinkedList<Card> _cards) {
         cards = _cards;
         size = _cards.size();
     }
 
-    /** Adds a Card to the top of the CardPIle and updates size. */
+    /** Adds a com.Card to the top of the CardPIle and updates size. */
     public void add(Card card) {
         cards.push(card);
         ++size;
     }
 
-    /** Removes a Card from the top of the CardPile and updates size. */
+    /** Removes a com.Card from the top of the com.CardPile and updates size. */
     public Card remove() {
         --size;
         return cards.pop();
     }
 
-    /** Removes specified Card from the CardPile and updates size. */
+    /** Removes specified com.Card from the com.CardPile and updates size. */
     public void remove(Card card) {
         cards.remove(card);
         --size;
     }
 
-    /** Returns a copy of the cards in the CardPile. */
+    /** Returns a copy of the cards in the com.CardPile. */
     public LinkedList<Card> getCards() {
         return new LinkedList<>(cards);
     }
 
-    /** Returns the size of the CardPile. */
+    /** Returns the size of the com.CardPile. */
     public int getSize() {
         return size;
     }

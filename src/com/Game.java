@@ -1,3 +1,5 @@
+package com;
+
 public class Game {
 
     /** Array of players in the game. */

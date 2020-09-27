@@ -1,3 +1,5 @@
+package com;
+
 import java.util.Collections;
 
 public class DrawDeck extends CardPile{
@@ -36,7 +38,7 @@ public class DrawDeck extends CardPile{
     }
 
     /**
-     * Cannot add cards to a DrawDeck
+     * Cannot add cards to a com.DrawDeck
      */
     @Override
     public void add(Card card) {

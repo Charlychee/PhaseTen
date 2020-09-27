@@ -1,3 +1,10 @@
+package com;
+
+import com.Card;
+import com.Game;
+import com.Hand;
+import com.Player;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +32,7 @@ public class TestGUI {
     /** Test player. */
     private Player player;
 
-    /** Player's hand. */
+    /** com.Player's hand. */
     private Hand hand;
 
     /** The game being run on this TestGUI. */

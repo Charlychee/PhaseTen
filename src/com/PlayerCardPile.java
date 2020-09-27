@@ -1,3 +1,5 @@
+package com;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,7 +31,7 @@ public class PlayerCardPile extends CardPile {
     /** The card type data. */
     int typeData = 0;
 
-    /** Creates a PlayerCardPile of type _TYPE with the specified _CARDS. */
+    /** Creates a com.PlayerCardPile of type _TYPE with the specified _CARDS. */
     public PlayerCardPile(typeEnum _type, LinkedList<Card> _cards) {
         if(_cards.isEmpty()) {
             throw new PTException("The given card list is empty.");
@@ -64,7 +66,7 @@ public class PlayerCardPile extends CardPile {
         }
     }
 
-    /** Checks if the PlayerCardPile is a run. */
+    /** Checks if the com.PlayerCardPile is a run. */
     private boolean isRun(){
         Collections.sort(cards);
         int expected = cards.get(0).getValue();
@@ -77,7 +79,7 @@ public class PlayerCardPile extends CardPile {
         return true;
     }
 
-    /** Checks if the PlayerCardPile is a number set. */
+    /** Checks if the com.PlayerCardPile is a number set. */
     private boolean isNumSet() {
         for(Card card : cards) {
             if(card.getValue() != typeData) {
@@ -87,12 +89,12 @@ public class PlayerCardPile extends CardPile {
         return true;
     }
 
-    /** Checks if the PlayerCardPile is a color set. */
+    /** Checks if the com.PlayerCardPile is a color set. */
     private boolean isColorSet() {
         return false;
     }
 
-    /** Checks if the PlayerCardPile is a even/odd set. */
+    /** Checks if the com.PlayerCardPile is a even/odd set. */
     private boolean isEvenOdd() {
         for(Card card : cards) {
             if(card.getValue() % 2 != typeData) {

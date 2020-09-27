@@ -1,8 +1,10 @@
-/** Represents a PhaseTen Card. */
+package com;
+
+/** Represents a PhaseTen com.Card. */
 public class Card implements Comparable<Card>{
 
     /** Represents the type of card*/
-    enum typeEnum {
+    public enum typeEnum {
         RED,
         GREEN,
         BLUE,
@@ -33,7 +35,7 @@ public class Card implements Comparable<Card>{
             type = _type;
             value = _value;
         }
-        else throw new PTException("Invalid Card");
+        else throw new PTException("Invalid com.Card");
     }
 
     /**
@@ -45,7 +47,7 @@ public class Card implements Comparable<Card>{
             type = _type;
             value = -1;
         }
-        else throw new PTException("Invalid Card");
+        else throw new PTException("Invalid com.Card");
     }
 
     /** Compares the values of the cards*/
@@ -72,7 +74,7 @@ public class Card implements Comparable<Card>{
 
     /**
      * Prints the color and value
-     * @return A string of color and value of the Card
+     * @return A string of color and value of the com.Card
      */
     public String toString()
     {
