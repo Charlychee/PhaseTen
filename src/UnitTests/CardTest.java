@@ -5,14 +5,14 @@ import static org.junit.Assert.*;
 
 public class CardTest {
 
-    static Card redCard1 = new Card(Card.typeEnum.RED, 1);
-    static Card redCard2 = new Card(Card.typeEnum.RED, 2);
-    static Card blueCard12 = new Card(Card.typeEnum.BLUE, 12);
-    static Card blueCardCopy = new Card(Card.typeEnum.BLUE, 12);
-    static Card yellowCard2 = new Card(Card.typeEnum.YELLOW, 2);
-    static Card greenCard11 = new Card(Card.typeEnum.GREEN, 11);
-    static Card wildCard = new Card(Card.typeEnum.WILD);
-    static Card skipCard = new Card(Card.typeEnum.SKIP);
+    protected Card redCard1 = new Card(Card.typeEnum.RED, 1);
+    protected Card redCard2 = new Card(Card.typeEnum.RED, 2);
+    protected Card blueCard12 = new Card(Card.typeEnum.BLUE, 12);
+    protected Card blueCardCopy = new Card(Card.typeEnum.BLUE, 12);
+    protected Card yellowCard2 = new Card(Card.typeEnum.YELLOW, 2);
+    protected Card greenCard11 = new Card(Card.typeEnum.GREEN, 11);
+    protected Card wildCard = new Card(Card.typeEnum.WILD);
+    protected Card skipCard = new Card(Card.typeEnum.SKIP);
     /** Tests creating WILD card with Card color ctor */
     @Test(expected = PTException.class)
     public void cardColorCtorWild() {

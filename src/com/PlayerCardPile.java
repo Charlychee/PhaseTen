@@ -6,9 +6,10 @@ import java.util.LinkedList;
 /** Represents a card play. */
 public class PlayerCardPile extends CardPile {
     // TODO: needs to consider the necessary size of the play in the checks.
+    // TODO: need to consider wild cards
     // TODO: Integrate constructor with Phases
     /** Represents the type of card play. */
-    enum typeEnum {
+    public enum typeEnum {
         NUM_SET,
         COLOR_SET,
         RUN,
@@ -16,7 +17,7 @@ public class PlayerCardPile extends CardPile {
     }
 
     /** Maps colors to integers. */
-    static final HashMap<Card.typeEnum, Integer> COLORS = new HashMap<>() {
+    static final MyHashMap<Card.typeEnum, Integer> COLORS = new MyHashMap<>() {
         {
             put(Card.typeEnum.BLUE, 0);
             put(Card.typeEnum.GREEN, 1);
@@ -31,10 +32,14 @@ public class PlayerCardPile extends CardPile {
     /** The card type data. */
     int typeData = 0;
 
-    /** Creates a com.PlayerCardPile of type _TYPE with the specified _CARDS. */
-    public PlayerCardPile(typeEnum _type, LinkedList<Card> _cards) {
+
+    /** Creates a com.PlayerCardPile of type _TYPE with the specified _CARDS with a length of at least EXPECTEDSIZE. */
+    public PlayerCardPile(typeEnum _type, LinkedList<Card> _cards, int expectedSize) {
         if(_cards.isEmpty()) {
             throw new PTException("The given card list is empty.");
+        }
+        if (_cards.size() < expectedSize) {
+            throw new PTException("The size of the given card list is less than the necessary size.");
         }
         cards = _cards;
         size = _cards.size();
@@ -46,19 +51,22 @@ public class PlayerCardPile extends CardPile {
                 }
                 break;
             case NUM_SET:
-                typeData = _cards.get(0).getValue();
+                Collections.sort(_cards);
+                typeData = _cards.get(size - 1).getValue();
                 if(!isNumSet()) {
                     throw new PTException("Given cards are not a number set.");
                 }
                 break;
             case EVEN_ODD:
-                typeData = _cards.get(0).getValue() % 2;
+                Collections.sort(_cards);
+                typeData = _cards.get(size - 1).getValue() % 2;
                 if(!isEvenOdd()) {
                     throw new PTException("Given cards are not an even/odd.");
                 }
                 break;
             case COLOR_SET:
-                typeData = COLORS.get(_cards.get(0).getType());
+                Collections.sort(_cards);
+                typeData = COLORS.get(_cards.get(size - 1).getType());
                 if(!isColorSet()) {
                     throw new PTException("Given cards are not a color set.");
                 }
@@ -66,12 +74,26 @@ public class PlayerCardPile extends CardPile {
         }
     }
 
-    /** Checks if the com.PlayerCardPile is a run. */
+    /** Checks if the com.PlayerCardPile is a run. Assumes that the card pile is already sorted. */
     private boolean isRun(){
-        Collections.sort(cards);
-        int expected = cards.get(0).getValue();
-        for(Card card : cards) {
-            if(card.getValue() != expected) {
+        int leadingWilds = 0;
+        // Finds how many wilds are at the start of the run.
+        for (int i = 0; i < size; i += 1) {
+            if (cards.get(i).getType() == Card.typeEnum.WILD) {
+                leadingWilds += 1;
+            } else {
+                break;
+            }
+        }
+        int expected = cards.get(leadingWilds).getValue();
+        // Doesn't allow for wilds before the number 1.
+        if (expected - leadingWilds <= 0) {
+            return false;
+        }
+        // Checks that the run is in the right order + there are no wilds after 12.
+        for (int i = leadingWilds + 1; i < size; i += 1) {
+            if(expected > 12 || (cards.get(i).getValue() != expected
+                    && cards.get(i).getType() != Card.typeEnum.WILD)) {
                 return false;
             }
             ++expected;
@@ -82,7 +104,7 @@ public class PlayerCardPile extends CardPile {
     /** Checks if the com.PlayerCardPile is a number set. */
     private boolean isNumSet() {
         for(Card card : cards) {
-            if(card.getValue() != typeData) {
+            if(card.getValue() != typeData && card.getType() != Card.typeEnum.WILD) {
                 return false;
             }
         }
@@ -91,13 +113,19 @@ public class PlayerCardPile extends CardPile {
 
     /** Checks if the com.PlayerCardPile is a color set. */
     private boolean isColorSet() {
-        return false;
+        Card.typeEnum needed = COLORS.getKey(typeData);
+        for (Card card : cards) {
+            if (card.getType() != needed && card.getType() != Card.typeEnum.WILD) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Checks if the com.PlayerCardPile is a even/odd set. */
     private boolean isEvenOdd() {
         for(Card card : cards) {
-            if(card.getValue() % 2 != typeData) {
+            if(card.getValue() % 2 != typeData && card.getType() != Card.typeEnum.WILD) {
                 return false;
             }
         }
