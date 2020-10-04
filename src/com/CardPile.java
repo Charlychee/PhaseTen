@@ -16,6 +16,7 @@ public class CardPile {
     /** Creates an empty com.CardPile. */
     public CardPile() {
         cards = new LinkedList<>();
+        size = 0;
     }
 
     /** Creates a com.CardPile with _CARDS. */
@@ -38,7 +39,7 @@ public class CardPile {
 
     /** Removes specified com.Card from the com.CardPile and updates size. */
     public void remove(Card card) {
-        cards.remove(card);
+        if (!cards.remove(card)) throw new PTException("Cannot remove card that does not exist.");
         --size;
     }
 
