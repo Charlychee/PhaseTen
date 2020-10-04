@@ -50,6 +50,14 @@ public class Card implements Comparable<Card>{
         else throw new PTException("Invalid com.Card");
     }
 
+    /** Checks if card O has the same type and value as this card. */
+    public boolean equals(Card o) {
+        if (type == o.type && value == o.value) {
+            return true;
+        }
+        return false;
+    }
+
     /** Compares the values of the cards*/
     @Override
     public int compareTo(Card o) {
