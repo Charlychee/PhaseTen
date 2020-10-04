@@ -39,8 +39,14 @@ public class CardPile {
 
     /** Removes specified com.Card from the com.CardPile and updates size. */
     public void remove(Card card) {
-        if (!cards.remove(card)) throw new PTException("Cannot remove card that does not exist.");
-        --size;
+        for(Card c : cards) {
+            if(c.equals(card)) {
+                cards.remove(c);
+                --size;
+                return;
+            }
+        }
+        throw new PTException("Card does not exist in CardPile");
     }
 
     /** Returns a copy of the cards in the com.CardPile. */

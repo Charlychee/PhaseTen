@@ -52,10 +52,7 @@ public class Card implements Comparable<Card>{
 
     /** Checks if card O has the same type and value as this card. */
     public boolean equals(Card o) {
-        if (type == o.type && value == o.value) {
-            return true;
-        }
-        return false;
+        return type == o.type && value == o.value;
     }
 
     /** Compares the values of the cards*/

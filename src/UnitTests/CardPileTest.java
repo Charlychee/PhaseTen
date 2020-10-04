@@ -1,13 +1,11 @@
-import com.PTException;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import java.util.LinkedList;
+import static org.junit.Assert.*;
+
 import com.CardPile;
 import com.Card;
-
-import java.util.LinkedList;
-
-import static org.junit.Assert.*;
+import com.PTException;
 
 public class CardPileTest {
 
@@ -24,7 +22,7 @@ public class CardPileTest {
     @Test
     public void testDefCtor() {
         CardPile aPile = new CardPile();
-        assertTrue(aPile.getCards().isEmpty());
+        assertTrue("Default Ctor doesn't create empty card pile.", aPile.getCards().isEmpty());
         assertEquals(aPile.getSize(), 0);
     }
 
@@ -62,6 +60,7 @@ public class CardPileTest {
         CardPile aPile = new CardPile(cards);
         aPile.remove(new Card(Card.typeEnum.RED, 1));
         assertEquals(aPile.getSize(), 2);
+        assertEquals(aPile.getSize(), aPile.getCards().size());
     }
 
     @Test(expected = PTException.class)
