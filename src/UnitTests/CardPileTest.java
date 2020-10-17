@@ -56,7 +56,6 @@ public class CardPileTest {
 
     @Test
     public void testRemoveCard() {
-        //TODO: Fix removing equivalent Card
         CardPile aPile = new CardPile(cards);
         aPile.remove(new Card(Card.typeEnum.RED, 1));
         assertEquals(aPile.getSize(), 2);

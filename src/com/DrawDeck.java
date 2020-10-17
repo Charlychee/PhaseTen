@@ -21,6 +21,7 @@ public class DrawDeck extends CardPile{
             cards.add(new Card(Card.typeEnum.WILD));
             cards.add(new Card(Card.typeEnum.WILD));
         }
+        size = cards.size();
     }
 
     /** Shuffles the cards in the deck. */
