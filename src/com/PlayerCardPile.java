@@ -59,6 +59,9 @@ public class PlayerCardPile extends CardPile {
                 break;
             case EVEN_ODD:
                 Collections.sort(_cards);
+                if (_cards.get(size - 1).getValue() == -1) {
+                    throw new PTException("Even/odd set cannot contain all wilds or skips.");
+                }
                 typeData = _cards.get(size - 1).getValue() % 2;
                 if(!isEvenOdd()) {
                     throw new PTException("Given cards are not an even/odd.");
@@ -66,6 +69,9 @@ public class PlayerCardPile extends CardPile {
                 break;
             case COLOR_SET:
                 Collections.sort(_cards);
+                if (_cards.get(size - 1).getValue() == -1) {
+                    throw new PTException("Color set cannot contain all wilds or skips.");
+                }
                 typeData = COLORS.get(_cards.get(size - 1).getType());
                 if(!isColorSet()) {
                     throw new PTException("Given cards are not a color set.");
@@ -85,13 +91,16 @@ public class PlayerCardPile extends CardPile {
                 break;
             }
         }
+        if (leadingWilds == size) {
+            throw new PTException("Cannot create a run of all wild cards.");
+        }
         int expected = cards.get(leadingWilds).getValue();
         // Doesn't allow for wilds before the number 1.
         if (expected - leadingWilds <= 0) {
             return false;
         }
         // Checks that the run is in the right order + there are no wilds after 12.
-        for (int i = leadingWilds + 1; i < size; i += 1) {
+        for (int i = leadingWilds; i < size; i += 1) {
             if(expected > 12 || (cards.get(i).getValue() != expected
                     && cards.get(i).getType() != Card.typeEnum.WILD)) {
                 return false;
@@ -103,6 +112,9 @@ public class PlayerCardPile extends CardPile {
 
     /** Checks if the com.PlayerCardPile is a number set. */
     private boolean isNumSet() {
+        if (typeData == -1) {
+            throw new PTException("Number set cannot contain all wilds or skips.");
+        }
         for(Card card : cards) {
             if(card.getValue() != typeData && card.getType() != Card.typeEnum.WILD) {
                 return false;
@@ -132,4 +144,8 @@ public class PlayerCardPile extends CardPile {
         return true;
     }
 
+    /** Returns the typeData of this PlayerCardPile. */
+    public int getTypeData() {
+        return typeData;
+    }
 }
