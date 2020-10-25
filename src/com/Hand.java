@@ -1,10 +1,11 @@
 package com;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 
 public class Hand extends CardPile{
 
-    enum typeEnum {
+    public enum typeEnum {
         VALUE,
         COLOR,
         EVENODD
@@ -27,8 +28,24 @@ public class Hand extends CardPile{
         if (c1.getValue()%2 == 0) {
             return -1;
         }
+        if (c1.getValue() == -1) {
+            //Move WILD and SKIP to back
+            return 1;
+        }
+        if (c2.getValue() == -1) {
+            return -1;
+        }
+        //Move Odds to back but before wild/skip
         return 1;
     };
+
+    public Hand() {
+        super();
+    }
+
+    public Hand(LinkedList<Card> _cards) {
+        super(_cards);
+    }
 
     /**
      * Sorts the cards field by a certain type
