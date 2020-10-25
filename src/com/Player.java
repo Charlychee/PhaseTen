@@ -1,7 +1,15 @@
 package com;
 
 public abstract class Player {
+
+    /** The cards in this player's hand. */
     private Hand hand;
+
+    /** Indicates whether the player has completed their phase. */
+    private boolean completedPhase;
+
+    /** Current phase. */
+    private int currentPhase;
 
     public Player() {
         hand = new Hand();
