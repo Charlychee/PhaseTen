@@ -20,22 +20,32 @@ public class Hand extends CardPile{
 
     /** Compare by even/odd*/
     private final Comparator<Card> evenOddOrder = (c1, c2) -> {
-        if (c1.getValue()%2 == c2.getValue()%2) {
+        int valueOne = c1.getValue();
+        int valueTwo = c2.getValue();
+        if (valueOne%2 == valueTwo%2) {
             // Both numbers are odd or both numbers are even
-            return 0;
+            if (valueOne < valueTwo) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
         }
         // One is odd, the other one is even
-        if (c1.getValue()%2 == 0) {
+        if (valueOne%2 == 0) {
             return -1;
         }
-        if (c1.getValue() == -1) {
+        if (valueOne == -1) {
             //Move WILD and SKIP to back
             return 1;
         }
-        if (c2.getValue() == -1) {
+        if (valueTwo == -1) {
+            //Move WILD and SKIP to back after odds
             return -1;
         }
-        //Move Odds to back but before wild/skip
+        if (valueOne == valueTwo) {
+            return 0;
+        }
         return 1;
     };
 

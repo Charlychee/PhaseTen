@@ -16,7 +16,7 @@ public class HandTest {
     Card blueTwo = new Card(Card.typeEnum.BLUE, 2);
     Card redOne = new Card(Card.typeEnum.RED, 1);
     Card redFive = new Card(Card.typeEnum.RED, 5);
-    Card greenFour = new Card(Card.typeEnum.GREEN, 4);
+    Card greenFour = new Card(Card.typeEnum.GREEN, 3);
     Card greenSix = new Card(Card.typeEnum.GREEN, 6);
     Card SKIP1 = new Card(Card.typeEnum.SKIP);
     Card SKIP2 = new Card(Card.typeEnum.SKIP);
@@ -30,7 +30,6 @@ public class HandTest {
     public void setUp() {
         Collections.shuffle(cards);
         theHand = new Hand(cards);
-
     }
 
     @Test
@@ -51,22 +50,25 @@ public class HandTest {
     @Test
     public void evenOddOrderTest() {
         theHand.sortBy(Hand.typeEnum.EVENODD);
+        int size = theHand.getSize();
         int expected = 0;
         int i;
-        for(i = 0; i < theHand.getSize(); ++i) {
+        for(i = 0; i < size; ++i) {
             Card theCard = theHand.remove();
             int value = theCard.getValue() % 2;
             if (value != expected) {
-                if(expected == 1) {
-                    expected = -2;
+                if(expected == 0) {
+                    ++expected;
+                }
+                else if(expected == 1) {
+                    expected = -1;
                 }
                 else if(expected == -1) {
                     break;
                 }
-                ++expected;
             }
         }
-        assertEquals(theHand.getSize(), i);
+        assertEquals(size, i);
     }
 
 }
