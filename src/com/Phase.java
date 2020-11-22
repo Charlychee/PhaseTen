@@ -7,16 +7,16 @@ import java.util.Collections;
 public class Phase {
     /** The ten phases of the original Phase 10 game. */
     public static final Phase[] ORIGINAL_PHASES = {
-            new Phase(2, 3, 3, 0, 0, 0),
-            new Phase(1, 3, 1, 4, 0, 0),
-            new Phase(1, 4, 1, 4, 0, 0),
-            new Phase(0, 1, 7, 0, 0),
-            new Phase(0, 1, 8, 0, 0),
-            new Phase(0, 1, 9, 0, 0),
-            new Phase(2, 4, 4, 0, 0, 0),
-            new Phase(0, 0, 0, 1, 7),
-            new Phase(2, 2, 5, 0, 0, 0),
-            new Phase(2, 3, 5, 0, 0, 0),
+            new Phase(1, 2, 3, 3, 0, 0, 0),
+            new Phase(2, 1, 3, 1, 4, 0, 0),
+            new Phase(3, 1, 4, 1, 4, 0, 0),
+            new Phase(4, 0, 1, 7, 0, 0),
+            new Phase(5, 0, 1, 8, 0, 0),
+            new Phase(6,0, 1, 9, 0, 0),
+            new Phase(7, 2, 4, 4, 0, 0, 0),
+            new Phase(8, 0, 0, 0, 1, 7),
+            new Phase(9, 2, 2, 5, 0, 0, 0),
+            new Phase(10, 2, 3, 5, 0, 0, 0),
     };
 
     /** Information about the runs needed in this phase. */
@@ -31,13 +31,17 @@ public class Phase {
     /** Information about the color sets needed in this phase. */
     private ArrayList<Integer> colorSets;
 
+    /** The number of this current phase. */
+    private int phaseNumber;
+
     /**
-     *  Creates a phase with the given number of numberSets, runs, evenOdds, and colorSets.
-     *  The first argument gives the number of numberSets n, followed by n arguments specifying
+     *  Creates a phase with number _PHASENUMBER with the given number of numberSets, runs, evenOdds, and colorSets.
+     *  The first argument of numbers gives the number of numberSets n, followed by n arguments specifying
      *  the sizes of each numberSet. The remaining arguments follow the same pattern for runs,
      *  evenOdds, and colorSets.
      *  */
-    public Phase(Integer... numbers) {
+    public Phase(int _phaseNumber, Integer... numbers) {
+        phaseNumber = _phaseNumber;
         int totalNumSets = numbers[0];
         int runIndex = 1 + totalNumSets;
         int totalRuns = numbers[runIndex];
@@ -57,7 +61,7 @@ public class Phase {
 
     /** Returns a string explaining the necessary player card piles for this phase. */
     public String toString() {
-        String phaseString = "";
+        String phaseString = "Phase " + phaseNumber + ":\n";
         if (numSets.size() != 0) {
             phaseString += numSets.size() + " number set(s) of size " + numSets.toString() +"\n";
         }
@@ -92,5 +96,10 @@ public class Phase {
     /** Returns a copy of the arraylist specifying the colorSets needed for this phase. */
     public ArrayList<Integer> getColorSets() {
         return new ArrayList<>(colorSets);
+    }
+
+    /** Returns the phaseNumber. */
+    public int getPhaseNumber() {
+        return phaseNumber;
     }
 }

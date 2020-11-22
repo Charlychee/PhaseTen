@@ -9,11 +9,13 @@ public abstract class Player {
     private boolean completedPhase;
 
     /** Current phase. */
-    private int currentPhase;
+    private Phase currentPhase;
 
     public Player() {
         hand = new Hand();
+        currentPhase = Phase.ORIGINAL_PHASES[0];
     }
+
     /** Draws a card from PILE. */
     public void draw(CardPile pile) {
         Card drawnCard = pile.remove();
