@@ -11,6 +11,9 @@ public abstract class Player {
     /** Current phase. */
     private Phase currentPhase;
 
+    /** Array of piles the player has created */
+    private PlayerCardPile[] cardPiles;
+
     public Player() {
         hand = new Hand();
         currentPhase = Phase.ORIGINAL_PHASES[0];
@@ -18,8 +21,16 @@ public abstract class Player {
 
     /** Draws a card from PILE. */
     public void draw(CardPile pile) {
-        Card drawnCard = pile.remove();
-        hand.add(drawnCard);
+        if(pile instanceof DrawDeck || pile instanceof DiscardPile) {
+            Card drawnCard = pile.remove();
+            hand.add(drawnCard);
+        }
+        else throw new PTException("Cannot draw from CardPile that is not DrawDeck or DiscardPile");
+    }
+
+    /** Adds card into PILE. (Also used for discard) */
+    public void addToPile(Card card, CardPile pile) {
+        // Need to check if card is in hand, before removing it.
     }
 
     /** Gets the player's hand. */
