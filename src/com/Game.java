@@ -35,6 +35,10 @@ public class Game {
         deck.deal(10, players);
     }
 
+    /** Returns the current player having a turn. */
+    public Player getCurrentPlayer() {
+        return players[currPlayer];
+    }
     /** Returns the players. */
     public Player[] getPlayers() {
         return players;

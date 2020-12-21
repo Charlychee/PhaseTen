@@ -14,7 +14,7 @@ public class Main {
         System.out.print("> ");
         while (in.hasNextLine()) {
             if (CURRENTGAME != null) {
-
+                System.out.println("Player " + CURRENTGAME.getCurrentPlayer().)
             }
             String line = in.nextLine().trim();
             if (line.matches(CMDPATTERNS)) {

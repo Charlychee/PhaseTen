@@ -3,20 +3,28 @@ package com;
 public abstract class Player {
 
     /** The cards in this player's hand. */
-    private Hand hand;
+    protected Hand hand;
 
     /** Indicates whether the player has completed their phase. */
-    private boolean completedPhase;
+    protected boolean completedPhase;
 
     /** Current phase. */
-    private Phase currentPhase;
+    protected Phase currentPhase;
 
     /** Array of piles the player has created */
-    private PlayerCardPile[] cardPiles;
+    protected PlayerCardPile[] cardPiles;
+
+    /** Number of players create. */
+    protected static int numPlayers = 0;
+
+    /** Id of this player. */
+    protected int id;
 
     public Player() {
         hand = new Hand();
         currentPhase = Phase.ORIGINAL_PHASES[0];
+        id = numPlayers;
+        numPlayers += 1;
     }
 
     /** Draws a card from PILE. */
@@ -36,6 +44,11 @@ public abstract class Player {
     /** Gets the player's hand. */
     public Hand getHand() {
         return hand;
+    }
+
+    /** Gets the id of this player. */
+    public int getID() {
+        return id;
     }
 
     /** Prints out a string of information for this player. */
