@@ -1,6 +1,6 @@
 package com;
 
-public abstract class Player {
+public class Player {
 
     /** The cards in this player's hand. */
     private Hand hand;
@@ -30,12 +30,21 @@ public abstract class Player {
 
     /** Adds card into PILE. (Also used for discard) */
     public void addToPile(Card card, CardPile pile) {
-        // Need to check if card is in hand, before removing it.
+        hand.remove(card);
+        pile.add(card);
     }
 
     /** Gets the player's hand. */
     public Hand getHand() {
         return hand;
+    }
+
+    public boolean getCompletedPhase() {
+        return completedPhase;
+    }
+
+    public PlayerCardPile[] getCardPiles() {
+        return cardPiles;
     }
 
     /** Prints out a string of information for this player. */
