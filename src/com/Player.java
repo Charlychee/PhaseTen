@@ -1,6 +1,6 @@
 package com;
 
-public class Player {
+public abstract class Player {
 
     /** The cards in this player's hand. */
     protected Hand hand;

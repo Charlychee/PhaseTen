@@ -18,12 +18,15 @@ public class PlayerTest {
         // Drawing from DrawDeck
         DrawDeck deck = new DrawDeck();
         Player player = new HumanPlayer();
+        player.setCurrentTurn(true);
         player.draw(deck);
         assertTrue(player.getHand().getCards().pop().equals(new Card(Card.typeEnum.BLUE,1)));
 
         // Drawing from DiscardPile
         DiscardPile discard = new DiscardPile();
         discard.add(new Card(Card.typeEnum.RED,1));
+        player = new HumanPlayer();
+        player.setCurrentTurn(true);
         player.draw(discard);
         assertTrue(player.getHand().getCards().pop().equals(new Card(Card.typeEnum.RED,1)));
     }
