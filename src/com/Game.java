@@ -14,6 +14,7 @@ public class Game {
     /** Index of the current player. */
     private int currPlayer;
 
+    // TODO: Create games to specify names for players
     /** Creates a new game with NUMHUMAN human players, NUMCPU CPU players. */
     public Game(int numHuman, int numCPU) {
         players = new Player[numHuman + numCPU];
