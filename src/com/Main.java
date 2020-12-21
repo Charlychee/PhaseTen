@@ -5,17 +5,16 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Main {
-    private static final String CMDPATTERNS = "\\?|(start-game[ -h [1-8]]?[ -cpu [1-8]]?)";
-    private static final String ALLCOMMANDS = "\\?|start-game";
+    private static final String CMDPATTERNS = "\\?|(start-game( -h [1-8])?( -cpu [1-8])?)|(hand( -all)?)|(end)|(draw " +
+            "(deck|discard))|(discard ([RrGgBbYy](1[0-2]|[1-9]))|[WwSs])";
+    private static final String ALLCOMMANDS = "\\?|start-game|hand|end|draw|discard";
     private static Game CURRENTGAME;
+    private static Player CURRENTPLAYER;
     public static void main(String[] args) {
         System.out.println("Welcome to PhaseTen Command Line Testing. Press ? for a list of commands.");
         Scanner in = new Scanner(System.in);
-        System.out.print("> ");
-        while (in.hasNextLine()) {
-            if (CURRENTGAME != null) {
-                System.out.println("Player " + CURRENTGAME.getCurrentPlayer().)
-            }
+        while (true) {
+            System.out.print("> ");
             String line = in.nextLine().trim();
             if (line.matches(CMDPATTERNS)) {
                 String[] cmdArr = line.split("\\s");
@@ -24,7 +23,11 @@ public class Main {
             } else {
                 System.out.println("Not a valid command. Press ? for a list of valid commands.");
             }
-            System.out.print("> ");
+            if (CURRENTGAME != null) {
+                CURRENTPLAYER = CURRENTGAME.getCurrentPlayer();
+                System.out.println("Player " + CURRENTPLAYER.getID() + "'s turn. Top of discard pile is: "
+                        + CURRENTGAME.getDiscardTop());
+            }
         }
     }
 
@@ -37,7 +40,7 @@ public class Main {
     public static void process(String command, String[] args) {
         if (command.matches(ALLCOMMANDS)) {
             if (command.equals("?") && args.length == 0) {
-                printResource("src/com/testcommands.txt");
+                printResource("com/testcommands.txt");
                 return;
             } else if (command.equals("start-game")) {
                 if (CURRENTGAME != null) {
@@ -59,6 +62,32 @@ public class Main {
                     System.out.println("Creating a game with 1 human player.");
                     CURRENTGAME = new Game(1, 0);
                     CURRENTGAME.startGame();
+                }
+            } else if (command.equals("hand")) {
+                if (args.length == 0) {
+                    System.out.println(CURRENTPLAYER.getHand());
+                } else {
+                    for (Player p : CURRENTGAME.getPlayers()) {
+                        System.out.println("Player " + p.getID());
+                        System.out.println(p.getHand());
+                    }
+                }
+            } else if (command.equals("end")) {
+                CURRENTGAME = null;
+            } else {
+                // These methods may cause PTExceptions and are commands playing the game.
+                try {
+                    if (command.equals("draw")) {
+                        Card drawn;
+                        if (args[0].equals("deck")) {
+                            drawn = CURRENTPLAYER.draw(CURRENTGAME.getDeck());
+                        } else {
+                            drawn = CURRENTPLAYER.draw(CURRENTGAME.getDiscard());
+                        }
+                        System.out.println("Player drew a card: " + drawn);
+                    }
+                } catch (PTException e) {
+                    System.out.println(e.getMessage());
                 }
             }
         } else {

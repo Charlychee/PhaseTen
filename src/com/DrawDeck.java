@@ -32,8 +32,9 @@ public class DrawDeck extends CardPile{
     /** Deals NUMCARDS cards to PLAYERS. */
     public void deal(int numCards, Player[] players) {
         for (Player p : players) {
+            Hand pHand = p.getHand();
             for (int i = 0; i < 10; i += 1) {
-                p.draw(this);
+                pHand.add(this.remove());
             }
         }
     }

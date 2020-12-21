@@ -27,21 +27,37 @@ public class Game {
         deck = new DrawDeck();
         discard = new DiscardPile();
         currPlayer = 0;
+        players[0].currentTurn = true;
     }
 
     public void startGame() {
         deck.shuffle();
-        System.out.println("Deck: \n" + deck.toString());
         deck.deal(10, players);
+        discard.add(deck.remove());
     }
 
+    /** Returns the card at the top of the discard pile without removing it. */
+    public Card getDiscardTop() {
+        return discard.peek();
+    }
     /** Returns the current player having a turn. */
     public Player getCurrentPlayer() {
         return players[currPlayer];
     }
+
     /** Returns the players. */
     public Player[] getPlayers() {
         return players;
+    }
+
+    /** Returns the draw deck. */
+    public DrawDeck getDeck() {
+        return deck;
+    }
+
+    /** Returns the discard pile. */
+    public DiscardPile getDiscard() {
+        return discard;
     }
 
     /** Returns a string of information for this game. */

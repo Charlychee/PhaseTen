@@ -20,6 +20,12 @@ public abstract class Player {
     /** Id of this player. */
     protected int id;
 
+    /** Indicates whether it's this player's turn. */
+    protected boolean currentTurn;
+
+    /** Indicates whether this player has drawn a card. */
+    protected boolean hasDrawn;
+
     public Player() {
         hand = new Hand();
         currentPhase = Phase.ORIGINAL_PHASES[0];
@@ -28,10 +34,17 @@ public abstract class Player {
     }
 
     /** Draws a card from PILE. */
-    public void draw(CardPile pile) {
+    public Card draw(CardPile pile) {
+        if (!currentTurn) {
+            throw new PTException("Not the player's turn.");
+        } else if (hasDrawn) {
+            throw new PTException("Player has already drawn.");
+        }
         if(pile instanceof DrawDeck || pile instanceof DiscardPile) {
             Card drawnCard = pile.remove();
             hand.add(drawnCard);
+            hasDrawn = true;
+            return drawnCard;
         }
         else throw new PTException("Cannot draw from CardPile that is not DrawDeck or DiscardPile");
     }
@@ -49,6 +62,11 @@ public abstract class Player {
     /** Gets the id of this player. */
     public int getID() {
         return id;
+    }
+
+    /** Sets this player's currentTurn. */
+    public void setCurrentTurn(boolean turn) {
+        currentTurn = turn;
     }
 
     /** Prints out a string of information for this player. */
