@@ -17,4 +17,12 @@ public class DiscardPile extends CardPile{
         }
     }
 
+    /** Returns the card at the top of the DiscardPile without removing it from the CardPile. */
+    public Card peek() {
+        if (size == 0) {
+            return null;
+        }
+        return cards.peek();
+    }
+
 }

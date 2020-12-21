@@ -1,0 +1,11 @@
+Commands for testing the PhaseTen system:
+start-game  [-h [1-8]] [-cpu [1-8]]
+            Creates a game with optional parameters -h human players and -cpu players.
+            If options aren't provided, defaults to 1 human player
+hand        [-all]
+            Prints out all the cards in the current player's hand.
+            If optional -all parameter given, prints out the hands of all players.
+draw        deck|discard
+            Has the current player draw from either the specified argument
+            deck or discard pile.
+end         Ends the current game.
