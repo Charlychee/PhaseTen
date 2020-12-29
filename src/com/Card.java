@@ -77,6 +77,12 @@ public class Card implements Comparable<Card>{
         return value;
     }
 
+    // TODO: Replace instances of card.getType() == typeEnum.WILD with this method
+    /** Returns whether the card is of type WILD. */
+    public boolean isWild() {
+        return type == typeEnum.WILD;
+    }
+
     /**
      * Prints the color and value
      * @return A string of color and value of the com.Card

@@ -31,7 +31,7 @@ public class CardPile {
         ++size;
     }
 
-    /** Removes a com.Card from the top of the com.CardPile and updates size. */
+    /** Removes a com.Card from the top of the com.CardPile, updates size, and returns the removed card. */
     public Card remove() {
         --size;
         return cards.pop();

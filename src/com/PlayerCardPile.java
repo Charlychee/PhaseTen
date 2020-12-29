@@ -5,9 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 /** Represents a card play. */
 public class PlayerCardPile extends CardPile {
-    // TODO: needs to consider the necessary size of the play in the checks.
-    // TODO: need to consider wild cards
     // TODO: Integrate constructor with Phases
+    // TODO: Possible that type passed into constructor is null? Need to handle this?
     /** Represents the type of card play. */
     public enum typeEnum {
         NUM_SET,
@@ -29,7 +28,8 @@ public class PlayerCardPile extends CardPile {
     /** The type of card play. */
     final typeEnum type;
 
-    /** The card type data. */
+    /** The card type data. Run: first card in the run. Num_set: number of this set. Even/Odd: 0 if even, 1 if odd.
+     *  Color_set: number representing color of the set. */
     int typeData = 0;
 
 
@@ -99,6 +99,10 @@ public class PlayerCardPile extends CardPile {
         if (expected - leadingWilds <= 0) {
             return false;
         }
+
+        // TODO: Double check this works in a test. Find a better way to set typeData?
+        typeData = expected - leadingWilds;
+
         // Checks that the run is in the right order + there are no wilds after 12.
         for (int i = leadingWilds; i < size; i += 1) {
             if(expected > 12 || (cards.get(i).getValue() != expected
@@ -142,6 +146,62 @@ public class PlayerCardPile extends CardPile {
             }
         }
         return true;
+    }
+
+    // TODO: Write tests for this method.
+    // TODO: Allow for player to decide whether to place wilds at the front or back of run.
+    /** Checks that CARD is valid before adding. If not, throws an exception. */
+    @Override
+    public void add(Card card) {
+        switch(type) {
+            case RUN:
+                if ((card.isWild() && (typeData + size + 1) <= 12) || card.getValue() == (typeData + size + 1)) {
+                    super.add(card);
+                } else if ((card.isWild() || card.getValue() == typeData - 1) && typeData != 1) {
+                    cards.addFirst(card);
+                    size += 1;
+                    typeData -= 1;
+                } else {
+                    throw new PTException("Given card does not fit in this run.");
+                }
+                break;
+            case NUM_SET:
+                if (card.isWild() || card.getValue() == typeData) {
+                    super.add(card);
+                } else {
+                    throw new PTException("Given card does not fit in this number set.");
+                }
+                break;
+            case EVEN_ODD:
+                if (card.isWild() || card.getValue() % 2 == typeData) {
+                    super.add(card);
+                } else {
+                    throw new PTException("Given card does not fit in this even/odd set.");
+                }
+                break;
+            case COLOR_SET:
+                Card.typeEnum type = card.getType();
+                if (card.isWild() || (COLORS.containsKey(type) && COLORS.get(type) == typeData)) {
+                    super.add(card);
+                } else {
+                    throw new PTException("Given card does not fit in this color set.");
+                }
+                break;
+
+        }
+    }
+
+    // TODO: Write tests for both overridden remove methods.
+    /** Throws an exception if attempting to remove from a PlayerCardPile. */
+    @Override
+    public Card remove() {
+        throw new PTException("Unable to remove card from PlayerCardPile.");
+    }
+
+    /** Throws an exception if attempting to remove from a PlayerCardPile. */
+    @Override
+    public void remove(Card card) {
+        throw new PTException("Unable to remove card from PlayerCardPile.");
     }
 
     /** Returns the typeData of this PlayerCardPile. */

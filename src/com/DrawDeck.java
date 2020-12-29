@@ -33,7 +33,7 @@ public class DrawDeck extends CardPile{
     public void deal(int numCards, Player[] players) {
         for (Player p : players) {
             Hand pHand = p.getHand();
-            for (int i = 0; i < 10; i += 1) {
+            for (int i = 0; i < numCards; i += 1) {
                 pHand.add(this.remove());
             }
         }

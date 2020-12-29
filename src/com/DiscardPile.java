@@ -7,14 +7,13 @@ public class DiscardPile extends CardPile{
         throw new PTException("Cannot remove a specific card.");
     }
 
+    // TODO: Modified the method slightly, test/double check method works for general case and when pile is empty
     @Override
     public Card remove() {
-        if(cards.get(cards.size()-1).getType() != Card.typeEnum.SKIP) {
+        if(size > 0 && cards.peekLast().getType() != Card.typeEnum.SKIP) {
             return super.remove();
         }
-        else {
-            throw new PTException("Cannot remove/draw 'SKIP' cards from com.DiscardPile.");
-        }
+        throw new PTException("Cannot remove/draw 'SKIP' cards from com.DiscardPile.");
     }
 
     /** Returns the card at the top of the DiscardPile without removing it from the CardPile. */
