@@ -7,6 +7,7 @@ import java.util.Collections;
 public class Phase {
     /** The ten phases of the original Phase 10 game. */
     public static final Phase[] ORIGINAL_PHASES = {
+            null, // placeholder for index 0
             new Phase(1, 2, 3, 3, 0, 0, 0),
             new Phase(2, 1, 3, 1, 4, 0, 0),
             new Phase(3, 1, 4, 1, 4, 0, 0),
@@ -59,23 +60,22 @@ public class Phase {
         Collections.addAll(colorSets, Arrays.copyOfRange(numbers, colorSetIndex + 1, colorSetIndex + 1 + totalColorSets));
     }
 
-    /** Returns a string explaining the necessary player card piles for this phase. */
+    /** Returns a string representation of this phase. */
     public String toString() {
-        String phaseString = "Phase " + phaseNumber + ":\n";
-        if (numSets.size() != 0) {
-            phaseString += numSets.size() + " number set(s) of size " + numSets.toString() +"\n";
+        String str = "Phase " + phaseNumber + ":\n";
+        for (int set : numSets) {
+            str += "Number set of size " + set + "\n";
         }
-        if (runs.size() != 0) {
-            phaseString += runs.size() + " run(s) of size " + runs.toString() + "\n";
+        for (int run : runs) {
+            str += "Run of " + run + "\n";
         }
-        if (evenOdds.size() != 0) {
-            phaseString += evenOdds.size() + " even/odd(s) of size " + evenOdds.toString() + "\n";
+        for (int set : evenOdds) {
+            str += "Even or odd set of size " + set + "\n";
         }
-        if (colorSets.size() != 0) {
-            phaseString += colorSets.size() + " color set(s) of size " + colorSets.toString();
+        for (int set : colorSets) {
+            str += "Color set of size " + set + "\n";
         }
-        phaseString = phaseString.replaceAll("[\\[\\]]", "");
-        return phaseString.trim();
+        return str;
     }
 
     /** Returns a copy of the arraylist specifying the runs needed for this phase. */

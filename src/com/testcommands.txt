@@ -1,5 +1,8 @@
 Commands for testing the PhaseTen system:
-start-game  [-h [1-8]] [-cpu [1-8]]
+Arguments given in brackets [] are optional.
+Arguments are given using regex patterns.
+
+startgame  [-h [1-8]] [-cpu [1-8]]
             Creates a game with optional parameters -h human players and -cpu players.
             If options aren't provided, defaults to 1 human player
 hand        [-all]
@@ -8,4 +11,10 @@ hand        [-all]
 draw        deck|discard
             Has the current player draw from either the specified argument
             deck or discard pile.
+discard     red|yellow|blue|green|wild|skip [[1-12]]
+            Discards the specified card, if possible and ends the current player's turn.
+phase       [-all]
+            Prints information about the current player's phase
+            If optional -all parameter given, prints out a summary of all player's
+            current phase status.
 end         Ends the current game.

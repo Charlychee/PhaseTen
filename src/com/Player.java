@@ -2,6 +2,7 @@ package com;
 
 public abstract class Player {
 
+    // TODO: Connect player to a game by adding a Game instance variable? Then the game's deck and discard could be stored here.
     /** The cards in this player's hand. */
     protected Hand hand;
 
@@ -10,6 +11,9 @@ public abstract class Player {
 
     /** Current phase. */
     protected Phase currentPhase;
+
+    /** Number of current phase. */
+    protected int phaseNumber;
 
     /** Array of piles the player has created */
     protected PlayerCardPile[] cardPiles;
@@ -28,7 +32,8 @@ public abstract class Player {
 
     public Player() {
         hand = new Hand();
-        currentPhase = Phase.ORIGINAL_PHASES[0];
+        phaseNumber = 1;
+        currentPhase = Phase.ORIGINAL_PHASES[phaseNumber];
         id = numPlayers;
         numPlayers += 1;
     }
@@ -49,22 +54,66 @@ public abstract class Player {
         else throw new PTException("Cannot draw from CardPile that is not DrawDeck or DiscardPile");
     }
 
-    /** Adds card into PILE. (Also used for discard) */
+    /** Adds CARD from hand into PILE. (Also used for discard) */
     public void addToPile(Card card, CardPile pile) {
         hand.remove(card);
         pile.add(card);
     }
 
-    // TODO: Create a card finder method:
-    //  - given info on the card's type and value, return the actual card in the player's hand that fits, null if
-    //      doesn't exist.
+    // TODO: Instead of having to make a copy of the card, consider the following:
+    //  - create another equal method in Card that compares a card with a type and value
+    //  - create a method in Hand that checks if it contains a card of a given type and value, and then returns it.
+    /** Adds a card from hand that matches TYPE and VALUE into PILE. (Also used for discard). */
+    public void discard(Card.typeEnum type, int value, CardPile pile) {
+        if (!(pile instanceof DiscardPile)) {
+            throw new PTException("Must discard into a CardPile of type DiscardPile.");
+        }
+        if (!currentTurn) {
+            throw new PTException("Not the player's turn.");
+        }
+        if (!hasDrawn) {
+            throw new PTException("Player must draw before discarding.");
+        }
+        Card copy;
+        if (type == Card.typeEnum.SKIP || type == Card.typeEnum.WILD) {
+            copy = new Card(type);
+        } else {
+            copy = new Card(type, value);
+        }
+        addToPile(copy, pile);
+        setCurrentTurn(false);
+        hasDrawn = false;
+    }
 
-    // TODO: Remove this getHand() function and all usages. Replace with:
-    //  - function that returns a string representation of all the cards in the player's hand
-    //  - function to add a card to a player's hand
+    // TODO: Remove this getHand() function and all usages in PlayerTest
     /** Gets the player's hand. */
     public Hand getHand() {
         return hand;
+    }
+
+    /** Returns a string representation of the player's hand. */
+    public String getHandDescription() {
+        return hand.toString();
+    }
+
+    /** Add CARD to player's hand. */
+    public void addToHand(Card card) {
+        hand.add(card);
+    }
+
+    /** Returns the phase the player is currently on. */
+    public Phase getCurrentPhase() {
+        return currentPhase;
+    }
+
+    /** Returns a summary of the player's phase. */
+    public String getPhaseSummary() {
+        String phaseInfo = "Phase %s: %s";
+        if (completedPhase) {
+            return String.format(phaseInfo, phaseNumber, "completed");
+        } else {
+            return String.format(phaseInfo, phaseNumber, "incomplete");
+        }
     }
 
     public boolean getCompletedPhase() {

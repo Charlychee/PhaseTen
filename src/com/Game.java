@@ -61,6 +61,14 @@ public class Game {
         return discard;
     }
 
+    /** Switches currPlayer to the next person's turn and returns the currPlayer. */
+    public Player switchTurn() {
+        currPlayer = (currPlayer + 1) % players.length;
+        Player curr = getCurrentPlayer();
+        curr.setCurrentTurn(true);
+        return curr;
+    }
+
     /** Returns a string of information for this game. */
     public String toString() {
         String info = "Deck: \n" + deck.toString() + "Discard: \n" + discard.toString() + "Players: \n";

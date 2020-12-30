@@ -1,6 +1,8 @@
 package com;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,6 +10,18 @@ import java.util.regex.Pattern;
 public class Main {
     /** Name of help text resource. */
     private static final String HELP_FILE = "com/testcommands.txt";
+
+    /** Mapping of strings to Card.typeEnum. */
+    private static final Map<String, Card.typeEnum> CARD_TYPES = new HashMap<>() {
+        {
+            put("red", Card.typeEnum.RED);
+            put("blue", Card.typeEnum.BLUE);
+            put("yellow", Card.typeEnum.YELLOW);
+            put("green", Card.typeEnum.GREEN);
+            put("wild", Card.typeEnum.WILD);
+            put("skip", Card.typeEnum.SKIP);
+        }
+    };
 
     /** Describes a command with up to four arguments. */
     private static final Pattern CMD_PATN = Pattern.compile("(\\S+)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*).*");
@@ -17,6 +31,12 @@ public class Main {
 
     /** String format for turn prompts. */
     private static final String TURN_PROMPT = "Player %s's turn. Top of the discard pile: %s";
+
+    /** String format for drawing a card. */
+    private static final String DRAW_CARD = "Player drew a %s from the %s.";
+
+    /** String format for discarding a card. */
+    private static final String DISCARD = "Player %s discarded a card[%s] and ended their turn.";
 
     /** Determines if a game is being played. */
     private static boolean PLAYING = false;
@@ -118,6 +138,7 @@ public class Main {
     private static void processCommands(String line) {
         line = line.trim();
         String arg1;
+        String arg2;
         if (line.length() == 0) {
             return;
         }
@@ -130,13 +151,13 @@ public class Main {
                 case "hand":
                     arg1 = command.group(2);
                     if (arg1.equals("")) {
-                        System.out.println(PLAYER.getHand());
+                        System.out.println(PLAYER.getHandDescription());
                         NEXTPROMPT = true;
                         break;
                     } else if (arg1.equals("-all")) {
                         for (Player p : GAME.getPlayers()) {
                             System.out.println("Player " + p.getID());
-                            System.out.println(p.getHand());
+                            System.out.println(p.getHandDescription());
                         }
                         NEXTPROMPT = true;
                         break;
@@ -146,20 +167,66 @@ public class Main {
                         arg1 = command.group(2);
                         if (arg1.equals("deck") || arg1.equals("discard")) {
                             Card drawn;
+                            String pile = "";
                             if (arg1.equals("deck")) {
                                 drawn = PLAYER.draw(GAME.getDeck());
+                                pile = "deck";
                             } else {
                                 drawn = PLAYER.draw(GAME.getDiscard());
+                                pile = "discard pile";
                             }
-                            System.out.println("Player drew a card: " + drawn);
+                            System.out.println(String.format(DRAW_CARD, drawn, pile));
+                        } else {
+                            System.out.println("Invalid operands.");
                         }
                     } catch (PTException e) {
                         System.out.println(e.getMessage());
                     }
                     break;
+                case "discard":
+                    try {
+                        String card;
+                        arg1 = command.group(2).toLowerCase();
+                        arg2 = command.group(3);
+                        Card.typeEnum type = CARD_TYPES.get(arg1);
+                        if (type == null) {
+                            System.out.println("Improper card type given.");
+                            break;
+                        }
+                        int value = -1;
+                        if (!arg2.equals("")) {
+                            value = Integer.parseInt(arg2);
+                            card = String.format("Color: %s, Value %s", arg1, value);
+                        } else {
+                            card = "Type: " + arg1;
+                        }
+                        PLAYER.discard(type, value, GAME.getDiscard());
+                        System.out.println(String.format(DISCARD, PLAYER.getID(), card));
+                        PLAYER = GAME.switchTurn();
+                        NEXTPROMPT = true;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Improper card value given.");
+                    } catch (PTException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "phase":
+                    arg1 = command.group(2);
+                    if (arg1.equals("")) {
+                        System.out.println(PLAYER.getCurrentPhase());
+                        NEXTPROMPT = true;
+                    } else if (arg1.equals("-all")) {
+                        for (Player p: GAME.getPlayers()) {
+                            System.out.println("Player " + p.getID() + ": " + p.getPhaseSummary());
+                        }
+                        NEXTPROMPT = true;
+                    }
+                    break;
                 case "end":
                     GAME = null;
                     PLAYING = false;
+                    System.out.println("Successfully ended the game.");
+                    break;
                 default:
                     System.out.println("Invalid command or operands. Press ? for a list of valid commands and arguments.");
             }
