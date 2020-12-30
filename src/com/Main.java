@@ -2,99 +2,169 @@ package com;
 
 import java.io.*;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-    private static final String CMDPATTERNS = "\\?|(start-game( -h [1-8])?( -cpu [1-8])?)|(hand( -all)?)|(end)|(draw " +
-            "(deck|discard))|(discard ([RrGgBbYy](1[0-2]|[1-9]))|[WwSs])";
-    private static final String ALLCOMMANDS = "\\?|start-game|hand|end|draw|discard";
-    private static Game CURRENTGAME;
-    private static Player CURRENTPLAYER;
+    /** Name of help text resource. */
+    private static final String HELP_FILE = "com/testcommands.txt";
+
+    /** Describes a command with up to four arguments. */
+    private static final Pattern CMD_PATN = Pattern.compile("(\\S+)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*).*");
+
+    /** String format for starting a game. */
+    private static final String START_GAME = "Starting a game with %s human players and %s cpus.";
+
+    /** String format for turn prompts. */
+    private static final String TURN_PROMPT = "Player %s's turn. Top of the discard pile: %s";
+
+    /** Determines if a game is being played. */
+    private static boolean PLAYING = false;
+
+    /** The current game being played. */
+    private static Game GAME;
+
+    /** The current player. */
+    private static Player PLAYER;
+
+    /** Specifies whether the next line should prompt with player's name/id. */
+    private static boolean NEXTPROMPT;
+
+    /** Input source. */
+    private static final Scanner IN = new Scanner(System.in);
+
     public static void main(String[] args) {
         System.out.println("Welcome to PhaseTen Command Line Testing. Press ? for a list of commands.");
-        Scanner in = new Scanner(System.in);
+        String next;
         while (true) {
-            System.out.print("> ");
-            String line = in.nextLine().trim();
-            if (line.matches(CMDPATTERNS)) {
-                String[] cmdArr = line.split("\\s");
-                String command = cmdArr[0];
-                process(command, getOperands(cmdArr));
+            next = readLine(NEXTPROMPT);
+            NEXTPROMPT = false;
+            if (PLAYING) {
+                processCommands(next);
             } else {
-                System.out.println("Not a valid command. Press ? for a list of valid commands.");
-            }
-            if (CURRENTGAME != null) {
-                CURRENTPLAYER = CURRENTGAME.getCurrentPlayer();
-                System.out.println("Player " + CURRENTPLAYER.getID() + "'s turn. Top of discard pile is: "
-                        + CURRENTGAME.getDiscardTop());
+                processStartGame(next);
+                NEXTPROMPT = true;
             }
         }
     }
 
-    public static String[] getOperands(String[] args) {
-        String[] operands = new String[args.length - 1];
-        System.arraycopy(args, 1, operands, 0, operands.length);
-        return operands;
+    /** Returns a command from the standard input after prompting the player's name if PROMPT. */
+    public static String readLine(boolean prompt) {
+        prompt(prompt);
+        if (IN.hasNextLine()) {
+            return IN.nextLine().trim();
+        }
+        return null;
     }
 
-    public static void process(String command, String[] args) {
-        if (command.matches(ALLCOMMANDS)) {
-            if (command.equals("?") && args.length == 0) {
-                printResource("com/testcommands.txt");
-                return;
-            } else if (command.equals("start-game")) {
-                if (CURRENTGAME != null) {
-                    System.out.println("Another game is already in progress.");
-                } else if (args.length == 2) {
-                    if (args[0].equals("-h")) {
-                        System.out.println("Creating a game with " + args[1] + " human players.");
-                        CURRENTGAME = new Game(Integer.parseInt(args[1]), 0);
+    /** Print a prompt. Prints the player's name if PLAYER */
+    private static void prompt(boolean player) {
+        if (PLAYING && player) {
+            System.out.println(String.format(TURN_PROMPT, PLAYER.getID(), GAME.getDiscardTop()));
+        }
+        System.out.print("> ");
+    }
+
+    // TODO: Fix up startgame case to account for all possible exceptions.
+    /** Processes only start-game commands. */
+    private static void processStartGame(String line) {
+        line = line.trim();
+        if (line.length() == 0) {
+            return;
+        }
+        Matcher command = CMD_PATN.matcher(line);
+        if (command.matches()) {
+            switch (command.group(1).toLowerCase()) {
+                case "?":
+                    printResource(HELP_FILE);
+                    break;
+                case "startgame":
+                    String tag1 = command.group(2);
+                    String tag2 = command.group(4);
+                    int humans = 0;
+                    int cpus = 0;
+
+                    if (tag1.equals("")) {
+                        humans = 1;
                     } else {
-                        System.out.println("Creating a game with " + args[1] + " CPUs.");
-                        CURRENTGAME = new Game(0, Integer.parseInt(args[1]));
-                    }
-                    CURRENTGAME.startGame();
-                } else if (args.length == 4) {
-                    System.out.println("Creating a game with " + args[1] + " human players and " + args[3] + " CPUS.");
-                    CURRENTGAME = new Game(Integer.parseInt(args[1]), Integer.parseInt(args[3]));
-                    CURRENTGAME.startGame();
-                } else {
-                    System.out.println("Creating a game with 1 human player.");
-                    CURRENTGAME = new Game(1, 0);
-                    CURRENTGAME.startGame();
-                }
-            } else if (command.equals("hand")) {
-                if (args.length == 0) {
-                    System.out.println(CURRENTPLAYER.getHand());
-                } else {
-                    for (Player p : CURRENTGAME.getPlayers()) {
-                        System.out.println("Player " + p.getID());
-                        System.out.println(p.getHand());
-                    }
-                }
-            } else if (command.equals("end")) {
-                CURRENTGAME = null;
-            } else {
-                // These methods may cause PTExceptions and are commands playing the game.
-                try {
-                    if (command.equals("draw")) {
-                        Card drawn;
-                        if (args[0].equals("deck")) {
-                            drawn = CURRENTPLAYER.draw(CURRENTGAME.getDeck());
-                        } else {
-                            drawn = CURRENTPLAYER.draw(CURRENTGAME.getDiscard());
+                        try {
+                            if (tag1.equals("-h")) {
+                                humans = Integer.parseInt(command.group(3));
+                            } else if (tag1.equals("-cpu")) {
+                                cpus = Integer.parseInt(command.group(3));
+                            }
+                            if (tag2.equals("-h")) {
+                                humans = Integer.parseInt(command.group(5));
+                            } else if (tag2.equals("-cpu")) {
+                                cpus = Integer.parseInt(command.group(5));
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Improper number arguments provided.");
                         }
-                        System.out.println("Player drew a card: " + drawn);
                     }
-                } catch (PTException e) {
-                    System.out.println(e.getMessage());
-                }
+                    GAME = new Game(humans, cpus);
+                    PLAYING = true;
+                    GAME.startGame();
+                    PLAYER = GAME.getCurrentPlayer();
+                    System.out.println(String.format(START_GAME, humans, cpus));
+                    break;
+                default:
+                    System.out.println("Unable to process the command.");
             }
-        } else {
-            System.out.println("Please enter a valid command. Press ? for a list of commands.");
         }
     }
 
+    /** Processes in-game commands. */
+    private static void processCommands(String line) {
+        line = line.trim();
+        String arg1;
+        if (line.length() == 0) {
+            return;
+        }
+        Matcher command = CMD_PATN.matcher(line);
+        if (command.matches()) {
+            switch (command.group(1).toLowerCase()) {
+                case "startgame":
+                    System.out.println("A game is already in session. Please end the current game before trying again.");
+                    break;
+                case "hand":
+                    arg1 = command.group(2);
+                    if (arg1.equals("")) {
+                        System.out.println(PLAYER.getHand());
+                        NEXTPROMPT = true;
+                        break;
+                    } else if (arg1.equals("-all")) {
+                        for (Player p : GAME.getPlayers()) {
+                            System.out.println("Player " + p.getID());
+                            System.out.println(p.getHand());
+                        }
+                        NEXTPROMPT = true;
+                        break;
+                    }
+                case "draw":
+                    try {
+                        arg1 = command.group(2);
+                        if (arg1.equals("deck") || arg1.equals("discard")) {
+                            Card drawn;
+                            if (arg1.equals("deck")) {
+                                drawn = PLAYER.draw(GAME.getDeck());
+                            } else {
+                                drawn = PLAYER.draw(GAME.getDiscard());
+                            }
+                            System.out.println("Player drew a card: " + drawn);
+                        }
+                    } catch (PTException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "end":
+                    GAME = null;
+                    PLAYING = false;
+                default:
+                    System.out.println("Invalid command or operands. Press ? for a list of valid commands and arguments.");
+            }
+        }
+    }
     /** Print the contents of the resource named NAME on the standard error. */
     static void printResource(String name) {
         try {

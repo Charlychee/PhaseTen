@@ -14,6 +14,7 @@ public class Game {
     /** Index of the current player. */
     private int currPlayer;
 
+    // TODO: Ensure that at least 1 player is passed into the game.
     // TODO: Create games to specify names for players
     /** Creates a new game with NUMHUMAN human players, NUMCPU CPU players. */
     public Game(int numHuman, int numCPU) {

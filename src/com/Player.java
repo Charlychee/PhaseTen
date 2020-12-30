@@ -55,6 +55,13 @@ public abstract class Player {
         pile.add(card);
     }
 
+    // TODO: Create a card finder method:
+    //  - given info on the card's type and value, return the actual card in the player's hand that fits, null if
+    //      doesn't exist.
+
+    // TODO: Remove this getHand() function and all usages. Replace with:
+    //  - function that returns a string representation of all the cards in the player's hand
+    //  - function to add a card to a player's hand
     /** Gets the player's hand. */
     public Hand getHand() {
         return hand;
