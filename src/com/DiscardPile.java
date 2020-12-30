@@ -10,7 +10,7 @@ public class DiscardPile extends CardPile{
     // TODO: Modified the method slightly, test/double check method works for general case and when pile is empty
     @Override
     public Card remove() {
-        if(size > 0 && cards.peekLast().getType() != Card.typeEnum.SKIP) {
+        if(size > 0 && cards.peek().getType() != Card.typeEnum.SKIP) {
             return super.remove();
         }
         throw new PTException("Cannot remove/draw 'SKIP' cards from com.DiscardPile.");

@@ -1,6 +1,7 @@
 package com;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 /** Represents a card play. */
@@ -14,6 +15,9 @@ public class PlayerCardPile extends CardPile {
         RUN,
         EVEN_ODD
     }
+
+    /** Comparator to sort PlayerCardPiles buy size. */
+    public static final Comparator<PlayerCardPile> ORDER = Comparator.comparing(PlayerCardPile::getSize);
 
     /** Maps colors to integers. */
     static final MyHashMap<Card.typeEnum, Integer> COLORS = new MyHashMap<>() {

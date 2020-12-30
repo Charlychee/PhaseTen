@@ -58,6 +58,10 @@ public class Phase {
         Collections.addAll(evenOdds, Arrays.copyOfRange(numbers, evenOddIndex + 1, evenOddIndex + 1 + totalEvenOdds));
         colorSets = new ArrayList<>();
         Collections.addAll(colorSets, Arrays.copyOfRange(numbers, colorSetIndex + 1, colorSetIndex + 1 + totalColorSets));
+        Collections.sort(numSets);
+        Collections.sort(runs);
+        Collections.sort(evenOdds);
+        Collections.sort(colorSets);
     }
 
     /** Returns a string representation of this phase. */
@@ -76,6 +80,23 @@ public class Phase {
             str += "Color set of size " + set + "\n";
         }
         return str;
+    }
+
+    /** Getter that calls the corresponding PlayerCardPile getter based on TYPE. */
+    public ArrayList<Integer> get(PlayerCardPile.typeEnum type) {
+        if (type == PlayerCardPile.typeEnum.NUM_SET) {
+            return getNumSets();
+        }
+        if (type == PlayerCardPile.typeEnum.RUN) {
+            return getRuns();
+        }
+        if (type == PlayerCardPile.typeEnum.EVEN_ODD) {
+            return getEvenOdds();
+        }
+        if (type == PlayerCardPile.typeEnum.COLOR_SET) {
+            return getColorSets();
+        }
+        return null;
     }
 
     /** Returns a copy of the arraylist specifying the runs needed for this phase. */

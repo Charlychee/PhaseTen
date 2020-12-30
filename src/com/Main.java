@@ -2,6 +2,7 @@ package com;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -23,8 +24,27 @@ public class Main {
         }
     };
 
+    /** Mapping of abbreviations to Card.typeEnum. */
+    private static final Map<String, Card.typeEnum> CARD_ABBREV = new HashMap<>() {
+        {
+            put("r", Card.typeEnum.RED);
+            put("b", Card.typeEnum.BLUE);
+            put("y", Card.typeEnum.YELLOW);
+            put("g", Card.typeEnum.GREEN);
+            put("w", Card.typeEnum.WILD);
+        }
+    };
+
     /** Describes a command with up to four arguments. */
     private static final Pattern CMD_PATN = Pattern.compile("(\\S+)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*).*");
+
+    /** Describes a command in Phase Creation mode (allows up to 12 cards to be added). */
+    private static final Pattern PHASE_CMD = Pattern.compile("(done|run|num|evenodd|color|create)\\s*(-?\\S*)\\s*(-?\\S*)" +
+            "\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)\\s*(-?\\S*)" +
+            "\\s*(-?\\S*)\\s*(-?\\S*).*");
+
+    /** Describes a card pattern. */
+    private static final Pattern CARD_PATN = Pattern.compile("([rbgyw])(1[0-2]|[1-9])?");
 
     /** String format for starting a game. */
     private static final String START_GAME = "Starting a game with %s human players and %s cpus.";
@@ -40,6 +60,9 @@ public class Main {
 
     /** Determines if a game is being played. */
     private static boolean PLAYING = false;
+
+    /** Determines if the current player is creating a phase. */
+    private static boolean CREATING_PHASE = false;
 
     /** The current game being played. */
     private static Game GAME;
@@ -60,7 +83,11 @@ public class Main {
             next = readLine(NEXTPROMPT);
             NEXTPROMPT = false;
             if (PLAYING) {
-                processCommands(next);
+                if (CREATING_PHASE) {
+                    processPhaseCreation(next);
+                } else {
+                    processCommands(next);
+                }
             } else {
                 processStartGame(next);
                 NEXTPROMPT = true;
@@ -222,6 +249,14 @@ public class Main {
                         NEXTPROMPT = true;
                     }
                     break;
+                case "createphase":
+                    if (PLAYER.getCompletedPhase()) {
+                        System.out.println("The phase is already completed.");
+                    } else {
+                        CREATING_PHASE = true;
+                        System.out.println("Entered phase creation.");
+                    }
+                    break;
                 case "end":
                     GAME = null;
                     PLAYING = false;
@@ -232,6 +267,106 @@ public class Main {
             }
         }
     }
+
+    /** Process and create a card from the given command matcher. */
+    private static void createCards(Matcher command, LinkedList<Card> cards) {
+        String card;
+        Matcher cardMatch;
+        Card.typeEnum type;
+        int value;
+        for (int i = 2; i < 14; i += 1) {
+            card = command.group(i);
+            if (card.equals("")) {
+                break;
+            }
+            cardMatch = CARD_PATN.matcher(card);
+            if (cardMatch.matches()) {
+                type = CARD_ABBREV.get(cardMatch.group(1));
+                if (type == Card.typeEnum.WILD) {
+                    cards.add(new Card(type));
+                } else {
+                    try {
+                        value = Integer.parseInt(cardMatch.group(2));
+                        cards.add(new Card(type, value));
+                    } catch (NumberFormatException e) {
+                        System.out.println("Improper arguments provided for card value.");
+                    }
+                }
+            }  else {
+                System.out.println("Problem with arguments.");
+                break;
+            }
+        }
+    }
+
+    /** Processes phase creation commands. */
+    private static void processPhaseCreation(String line) {
+        line = line.trim();
+        if (line.length() == 0) {
+            return;
+        }
+        Matcher command = PHASE_CMD.matcher(line);
+        if (command.matches()) {
+            LinkedList<Card> cards = new LinkedList<>();
+            switch(command.group(1)) {
+                case "done":
+                    System.out.println("Successfully quit out of phase creator.");
+                    CREATING_PHASE = false;
+                    break;
+                case "create":
+                    try {
+                        PLAYER.createCurrentPhase();
+                        System.out.println("Successfully completed the phase.");
+                        System.out.println("Exited phase creation.");
+                        CREATING_PHASE = false;
+                    } catch (PTException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case "num":
+                    try {
+                        createCards(command, cards);
+                        PLAYER.createPlayerCardPile(PlayerCardPile.typeEnum.NUM_SET, cards);
+                    } catch (PTException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+                    System.out.println("Successfully created the number set.");
+                    break;
+                case "run":
+                    try {
+                        createCards(command, cards);
+                        PLAYER.createPlayerCardPile(PlayerCardPile.typeEnum.RUN, cards);
+                    } catch (PTException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+                    System.out.println("Successfully created the run.");
+                    break;
+                case "evenodd":
+                    try {
+                        createCards(command, cards);
+                        PLAYER.createPlayerCardPile(PlayerCardPile.typeEnum.EVEN_ODD, cards);
+                    } catch (PTException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+                    System.out.println("Successfully created the even/odd set.");
+                    break;
+                case "color":
+                    try {
+                        createCards(command, cards);
+                        PLAYER.createPlayerCardPile(PlayerCardPile.typeEnum.COLOR_SET, cards);
+                    } catch (PTException e) {
+                        System.out.println(e.getMessage());
+                        break;
+                    }
+                    System.out.println("Successfully created the color set.");
+                    break;
+            }
+        }
+    }
+
     /** Print the contents of the resource named NAME on the standard error. */
     static void printResource(String name) {
         try {
